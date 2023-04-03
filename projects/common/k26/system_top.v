@@ -60,10 +60,6 @@ module system_top (
     .spi0_csn (1'b1),
     .spi0_miso (1'b0),
     .spi0_mosi (),
-    .spi0_sclk (),
-    .spi1_csn (1'b1),
-    .spi1_miso (1'b0),
-    .spi1_mosi (),
-    .spi1_sclk ());
+    .spi0_sclk ());
 
 endmodule

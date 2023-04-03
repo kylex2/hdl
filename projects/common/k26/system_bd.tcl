@@ -1,5 +1,5 @@
 source $ad_hdl_dir/projects/scripts/adi_pd.tcl
-source $ad_hdl_dir/projects/common/zcu102/zcu102_system_bd.tcl
+source $ad_hdl_dir/projects/common/k26/k26_system_bd.tcl
 
 #system ID
 ad_ip_parameter axi_sysid_0 CONFIG.ROM_ADDR_BITS 9

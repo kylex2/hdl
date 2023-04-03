@@ -37,12 +37,6 @@
 
 module system_top (
 
-  input       [12:0]      gpio_bd_i,
-  output      [ 7:0]      gpio_bd_o,
-
-  inout                   iic_scl,
-  inout                   iic_sda,
-
   output                  spi_clk,
   output                  spi_dio,
   input                   spi_do,
@@ -53,11 +47,6 @@ module system_top (
   input                   fpga_ref_clk_p,
   // Device clock passed through 9001
   input                   dev_clk_in,
-
-  input                   fpga_mcs_in_n,
-  input                   fpga_mcs_in_p,
-  output                  dev_mcs_fpga_out_n,
-  output                  dev_mcs_fpga_out_p,
 
   inout                   dgpio_0,
   inout                   dgpio_1,
@@ -118,21 +107,8 @@ module system_top (
   output                  tx2_qdata_out_n,
   output                  tx2_qdata_out_p,
   output                  tx2_strobe_out_n,
-  output                  tx2_strobe_out_p,
-
-  inout                   sm_fan_tach,
-  input                   vadj_err,
-  output                  platform_status,
-
-  inout                   tdd_sync,
-
-  //debug hdr
-  output       [9:0]      proto_hdr
+  output                  tx2_strobe_out_p
 );
-
-  // internal registers
-  reg         [  2:0] mcs_sync_m = 'd0;
-  reg                 dev_mcs_fpga_in = 1'b0;
 
   // internal signals
   wire        [94:0]      gpio_i;
@@ -145,10 +121,6 @@ module system_top (
   wire        [ 2:0]      spi_csn;
 
   wire fpga_ref_clk;
-  wire fpga_mcs_in;
-  wire tdd_sync_loc;
-  wire tdd_sync_i;
-  wire tdd_sync_cntr;
 
   // instantiations
 
@@ -157,37 +129,17 @@ module system_top (
     .IB (fpga_ref_clk_n),
     .O (fpga_ref_clk));
 
-  IBUFDS i_ibufgs_fpga_mcs_in (
-    .I (fpga_mcs_in_p),
-    .IB (fpga_mcs_in_n),
-    .O (fpga_mcs_in));
-
-  OBUFDS i_obufds_dev_mcs_fpga_in (
-    .I (dev_mcs_fpga_in),
-    .O (dev_mcs_fpga_out_p),
-    .OB (dev_mcs_fpga_out_n));
-
-  // multi-chip synchronization
-  //
-  always @(posedge fpga_ref_clk) begin
-    mcs_sync_m <= {mcs_sync_m[1:0], gpio_o[53]};
-    dev_mcs_fpga_in <= mcs_sync_m[2] & ~mcs_sync_m[1];
-  end
-
   // multi-ssi synchronization
   //
   assign mssi_sync = gpio_o[54];
 
-  assign platform_status = vadj_err;
-
   ad_iobuf #(
-    .DATA_WIDTH(16)
+    .DATA_WIDTH(15)
   ) i_iobuf (
-    .dio_t ({gpio_t[47:32]}),
-    .dio_i ({gpio_o[47:32]}),
-    .dio_o ({gpio_i[47:32]}),
-    .dio_p ({sm_fan_tach,  // 47
-             reset_trx,    // 46
+    .dio_t ({gpio_t[46:32]}),
+    .dio_i ({gpio_o[46:32]}),
+    .dio_o ({gpio_i[46:32]}),
+    .dio_p ({reset_trx,    // 46
              mode,         // 45
              gp_int,       // 44
              dgpio_11,     // 43
@@ -209,23 +161,13 @@ module system_top (
   assign gpio_tx2_enable_in = gpio_o[51];
 
   assign gpio_i[ 7: 0] = gpio_o[ 7: 0];
-  assign gpio_i[20: 8] = gpio_bd_i;
-  assign gpio_bd_o = gpio_o[ 7: 0];
+  assign gpio_i[20: 8] = 13'b0;
 
   assign gpio_i[54:48] = gpio_o[54:48];
-  assign gpio_i[55] = vadj_err;
   assign gpio_i[94:56] = gpio_o[94:56];
   assign gpio_i[31:21] = gpio_o[31:21];
 
   assign spi_en = spi_csn[0];
-
-  assign tdd_sync_loc = gpio_o[56];
-
-  // tdd_sync_loc - local sync signal from a GPIO or other source
-  // tdd_sync - external sync
-
-  assign tdd_sync_i = tdd_sync_cntr ? tdd_sync_loc : tdd_sync;
-  assign tdd_sync = tdd_sync_cntr ? tdd_sync_loc : 1'bz;
 
   system_wrapper i_system_wrapper (
     .ref_clk (fpga_ref_clk),
@@ -283,8 +225,8 @@ module system_top (
     .gpio_tx1_enable_in (gpio_tx1_enable_in),
     .gpio_tx2_enable_in (gpio_tx2_enable_in),
 
-    .tdd_sync (tdd_sync_i),
-    .tdd_sync_cntr (tdd_sync_cntr),
+    .tdd_sync (1'b0),
+    .tdd_sync_cntr (),
 
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
@@ -293,17 +235,11 @@ module system_top (
     .spi0_csn (spi_csn),
     .spi0_miso (spi_do),
     .spi0_mosi (spi_dio),
-    .spi1_sclk (),
-    .spi1_csn (),
-    .spi1_miso (1'b0),
-    .spi1_mosi (),
 
     // debug
-    .adc1_div_clk (proto_hdr[0]),
-    .adc2_div_clk (proto_hdr[1]),
-    .dac1_div_clk (proto_hdr[2]),
-    .dac2_div_clk (proto_hdr[3]));
-
-  assign proto_hdr[9:4] = {'b0};
+    .adc1_div_clk (),
+    .adc2_div_clk (),
+    .dac1_div_clk (),
+    .dac2_div_clk ());
 
 endmodule
