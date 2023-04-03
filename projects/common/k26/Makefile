@@ -4,11 +4,11 @@
 ## Auto-generated, do not modify!
 ####################################################################################
 
-PROJECT_NAME := template_zcu102
+PROJECT_NAME := template_k26
 
 M_DEPS += ../../scripts/adi_pd.tcl
-M_DEPS += ../../common/zcu102/zcu102_system_constr.xdc
-M_DEPS += ../../common/zcu102/zcu102_system_bd.tcl
+M_DEPS += ../../common/k26/k26_system_constr.xdc
+M_DEPS += ../../common/k26/k26_system_bd.tcl
 M_DEPS += ../../../library/common/ad_iobuf.v
 
 LIB_DEPS += axi_sysid

@@ -1,4 +1,4 @@
-source $ad_hdl_dir/projects/common/zcu102/zcu102_system_bd.tcl
+source $ad_hdl_dir/projects/common/k26/k26_system_bd.tcl
 source ../common/adrv9001_bd.tcl
 source $ad_hdl_dir/projects/scripts/adi_pd.tcl
 

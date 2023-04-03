@@ -20,7 +20,7 @@ source $ad_hdl_dir/projects/scripts/adi_board.tcl
 
 set CMOS_LVDS_N [get_env_param CMOS_LVDS_N 1]
 
-adi_project adrv9001_zcu102 0 [list \
+adi_project adrv9001_k26 0 [list \
   CMOS_LVDS_N $CMOS_LVDS_N \
 ]
 
@@ -28,7 +28,7 @@ adi_project_files {} [list \
   "system_top.v" \
   "system_constr.xdc"\
   "$ad_hdl_dir/library/common/ad_iobuf.v" \
-  "$ad_hdl_dir/projects/common/zcu102/zcu102_system_constr.xdc" ]
+  "$ad_hdl_dir/projects/common/k26/k26_system_constr.xdc" ]
 
 if {$CMOS_LVDS_N == 0} {
   adi_project_files {} [list \
@@ -40,5 +40,5 @@ if {$CMOS_LVDS_N == 0} {
   ]
 }
 
-adi_project_run adrv9001_zcu102
+adi_project_run adrv9001_k26
 
