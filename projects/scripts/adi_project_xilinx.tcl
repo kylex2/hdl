@@ -41,7 +41,7 @@ set p_prcfg_status ""
 # system_top module)
 #
 # Supported carrier names are: ac701, kc705, vc707, vcu118, vcu128, kcu105, zed,
-# microzed, zc702, zc706, mitx405, zcu102.
+# microzed, zc702, zc706, mitx405, zcu102, k26.
 #
 proc adi_project {project_name {mode 0} {parameter_list {}} } {
 
@@ -100,6 +100,10 @@ proc adi_project {project_name {mode 0} {parameter_list {}} } {
   if [regexp "_zcu102" $project_name] {
     set device "xczu9eg-ffvb1156-2-e"
     set board [lindex [lsearch -all -inline [get_board_parts] *zcu102*] end]
+  }
+  if [regexp "_k26" $project_name] {
+    set device "xck26-sfvc784-2LVI-i"
+    set board [lindex [lsearch -all -inline [get_board_parts] *k26i_som240_1_connector_kv260_carrier_som240_1_connector*] end]
   }
   if [regexp "_vmk180_es1" $project_name] {
     enable_beta_device xcvm*
@@ -163,7 +167,7 @@ proc adi_project_create {project_name mode parameter_list device {board "not-app
 
   if [regexp "^xc7z" $p_device] {
     set sys_zynq 1
-  } elseif [regexp "^xczu" $p_device]  {
+  } elseif { [regexp "^xczu" $p_device] || [regexp "^xck26" $p_device] } {
     set sys_zynq 2
   } elseif [regexp "^xcv\[ecmph\]" $p_device]  {
     set sys_zynq 3
