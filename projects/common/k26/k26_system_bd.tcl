@@ -1,5 +1,9 @@
 
 # create board design
+
+# set Kria SOM240_1 connector to KV260 evaluation carrier
+set_property board_connections {som240_1_connector xilinx.com:kv260_carrier:som240_1_connector:1.3} [current_project]
+
 # default ports
 
 create_bd_port -dir O -from 2 -to 0 spi0_csn
@@ -17,7 +21,8 @@ ad_ip_instance zynq_ultra_ps_e sys_ps8
 apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e \
   -config {apply_board_preset 1}  [get_bd_cells sys_ps8]
 
-ad_ip_parameter sys_ps8 CONFIG.PSU__PSS_REF_CLK__FREQMHZ 33.333333333
+#ad_ip_parameter sys_ps8 CONFIG.PSU__PSS_REF_CLK__FREQMHZ 33.333333333
+set_property -dict "CONFIG.PSU__PSS_REF_CLK__FREQMHZ 33.333333333 CONFIG.PSU__DDRC__CWL 16" [get_bd_cells sys_ps8]
 ad_ip_parameter sys_ps8 CONFIG.PSU__USE__M_AXI_GP0 0
 ad_ip_parameter sys_ps8 CONFIG.PSU__USE__M_AXI_GP1 0
 ad_ip_parameter sys_ps8 CONFIG.PSU__USE__M_AXI_GP2 1

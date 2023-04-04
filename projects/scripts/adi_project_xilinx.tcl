@@ -103,7 +103,7 @@ proc adi_project {project_name {mode 0} {parameter_list {}} } {
   }
   if [regexp "_k26" $project_name] {
     set device "xck26-sfvc784-2LVI-i"
-    set board [lindex [lsearch -all -inline [get_board_parts] *k26i_som240_1_connector_kv260_carrier_som240_1_connector*] end]
+    set board [lindex [lsearch -all -inline [get_board_parts] *k26i:*1.4] end]
   }
   if [regexp "_vmk180_es1" $project_name] {
     enable_beta_device xcvm*
